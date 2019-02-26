@@ -31,7 +31,8 @@
       </ImageView>
       <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="5.0">
          <children>
-            <Button fx:id="btnOriginal" onAction="#manipulateImage" text="Original" />
+            <Button fx:id="btnAnalyise" mnemonicParsing="false" text="Analyise Flock" />
+            <Button fx:id="btnOriginal" onAction="#manipulateImage" text="Show Original" />
             <Button fx:id="btnBW" mnemonicParsing="false" onAction="#manipulateImage" text="Black &amp; White" />
             <Label fx:id="lblMsg" text="Please select an image" />
          </children>

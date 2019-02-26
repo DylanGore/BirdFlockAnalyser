@@ -1,5 +1,6 @@
 package ie.dylangore.dsa2.ca1.gui;
 
+import ie.dylangore.dsa2.ca1.ProcessImage;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -38,25 +39,10 @@ public class ControllerMain {
     @FXML
     public void manipulateImage(ActionEvent event){
         if(currImage != null){
-            WritableImage wImage = new WritableImage((int)iWidth, (int)iHeight);
-            PixelReader pReader = image.getPixelReader();
-            PixelWriter pWriter = wImage.getPixelWriter();
-
             if(event.getSource() == btnOriginal || event.getSource() == menuOpen){
                 imageMain.setImage(image);
             }else if(event.getSource() == btnBW){
-                for(int y = 0; y < iHeight; y++){
-                    for(int x = 0; x < iWidth; x++){
-                        Color currColor = pReader.getColor(x,y);
-//                        System.out.println("RED: " + currColor.getRed() + " GREEN: " + currColor.getGreen() + " BLUE: " + currColor.getBlue());
-                        if(currColor.getRed() >= 0.5 || currColor.getGreen() >= 0.5 || currColor.getBlue() >= 0.5){
-                            pWriter.setColor(x,y, new Color(1,1,1, 1));
-                        }else{
-                            pWriter.setColor(x, y, new Color(0,0,0,1));
-                        }
-                    }
-                    imageMain.setImage(wImage);
-                }
+                imageMain.setImage(ProcessImage.makeBW(image, iWidth, iHeight));
             }else{
                 imageMain.setImage(image);
             }
