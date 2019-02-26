@@ -4,11 +4,12 @@ import ie.dylangore.dsa2.ca1.ProcessImage;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.control.*;
-import javafx.scene.image.*;
-import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -21,6 +22,7 @@ public class ControllerMain {
     @FXML MenuItem menuOpen;
     @FXML ImageView imageMain;
 
+    @FXML Button btnAnalyse;
     @FXML Button btnOriginal;
     @FXML Button btnBW;
 
@@ -29,8 +31,8 @@ public class ControllerMain {
     private static Stage primaryStage;
     private File currImage;
     private Image image;
-    private double iWidth;
-    private double iHeight;
+    private static double iWidth;
+    private static double iHeight;
 
 //    @FXML
 //    public void initialize(){
@@ -43,7 +45,11 @@ public class ControllerMain {
                 imageMain.setImage(image);
             }else if(event.getSource() == btnBW){
                 imageMain.setImage(ProcessImage.makeBW(image, iWidth, iHeight));
-            }else{
+            }else if(event.getSource() == btnAnalyse){
+                Image bwImage = ProcessImage.makeBW(image, iWidth, iHeight);
+                ProcessImage.processSets(bwImage, (int)iWidth, (int)iHeight);
+            }
+            else{
                 imageMain.setImage(image);
             }
         }else{
@@ -88,6 +94,14 @@ public class ControllerMain {
         alert.initStyle(StageStyle.UTILITY);
         alert.showAndWait();
         System.out.println("No Image Selected!");
+    }
+
+    public static double getWidth(){
+        return iWidth;
+    }
+
+    public static double getHeight(){
+        return iHeight;
     }
 
 }

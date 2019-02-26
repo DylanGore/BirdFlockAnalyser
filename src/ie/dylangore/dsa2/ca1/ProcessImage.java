@@ -1,10 +1,13 @@
 package ie.dylangore.dsa2.ca1;
 
+import ie.dylangore.dsa2.ca1.sets.DisjointSets;
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelReader;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
+
+import java.util.Arrays;
 
 public class ProcessImage {
 
@@ -26,5 +29,31 @@ public class ProcessImage {
         }
 
         return wImage;
+    }
+
+    public static void processSets(Image image, int width, int height){
+        DisjointSets.createSets(width, height);
+        int[][] imageSet = DisjointSets.getImageSet();
+
+        System.out.println("Array Size: " + imageSet.length + "\n");
+
+        WritableImage wImage = new WritableImage((int) width, (int) height);
+        PixelReader pReader = image.getPixelReader();
+        PixelWriter pWriter = wImage.getPixelWriter();
+
+        for(int y = 0; y < height; y++){
+            for(int x = 0; x < width; x++){
+                Color currColor = pReader.getColor(x, y);
+//                System.out.println("currColor: " + currColor);
+                if(currColor.equals(Color.WHITE)){
+                    imageSet[x][y] = 0;
+                }else{
+                    imageSet[x][y] = 1234;
+                }
+            }
+        }
+
+        DisjointSets.setImageSet(imageSet);
+//        System.out.println(Arrays.deepToString(imageSet));
     }
 }
