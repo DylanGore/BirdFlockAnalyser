@@ -222,4 +222,4 @@ Temporary Items
 
 # Custom
 *.pdf
-.idea/
+.idea/*.xml
