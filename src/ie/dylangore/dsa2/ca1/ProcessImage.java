@@ -1,13 +1,18 @@
 package ie.dylangore.dsa2.ca1;
 
 import ie.dylangore.dsa2.ca1.sets.DisjointSets;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelReader;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 
-import java.util.Arrays;
+import javax.imageio.ImageIO;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 public class ProcessImage {
 
@@ -34,6 +39,7 @@ public class ProcessImage {
             }
         }
 
+        saveFile(wImage, "imgOut/b&w");
         return wImage;
     }
 
@@ -76,5 +82,19 @@ public class ProcessImage {
         System.out.println("Image Width: " + width + " Image Height: " + height);
         System.out.println("Black: " + blackCount);
         System.out.println("White: " + whiteCount);
+    }
+
+    /**
+     * Save image to file
+     * @param image image to save
+     * @param fileName file name to save as
+     */
+    private static void saveFile(WritableImage image, String fileName){
+        try {
+            Files.createDirectories(Paths.get("imgOut"));
+            ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", new File(fileName + ".png") );
+        }catch (IOException ex){
+            ex.printStackTrace();
+        }
     }
 }
