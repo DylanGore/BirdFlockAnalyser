@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Arrays;
 
 public class ProcessImage {
 
@@ -82,6 +83,9 @@ public class ProcessImage {
         System.out.println("Image Width: " + width + " Image Height: " + height);
         System.out.println("Black: " + blackCount);
         System.out.println("White: " + whiteCount);
+
+       // Print Result from Set
+       System.out.println(Arrays.toString(DisjointSets.getImageSet()));
     }
 
     /**
