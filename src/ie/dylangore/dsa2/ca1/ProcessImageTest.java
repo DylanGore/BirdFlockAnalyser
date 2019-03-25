@@ -2,7 +2,6 @@ package ie.dylangore.dsa2.ca1;
 
 import ie.dylangore.dsa2.ca1.sets.DisjointSets;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -10,7 +9,7 @@ import org.testfx.framework.junit5.ApplicationTest;
 
 import java.io.File;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ProcessImageTest extends ApplicationTest {
 
