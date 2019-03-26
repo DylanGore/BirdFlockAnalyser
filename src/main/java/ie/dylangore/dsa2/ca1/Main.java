@@ -16,7 +16,7 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) {
         try {
-            VBox vb =  FXMLLoader.load(getClass().getResource("gui/main.fxml"));
+            VBox vb =  FXMLLoader.load(getClass().getResource("/gui/main.fxml"));
             Scene scene = new Scene(vb);
             primaryStage.setScene(scene);
             primaryStage.setResizable(false);
