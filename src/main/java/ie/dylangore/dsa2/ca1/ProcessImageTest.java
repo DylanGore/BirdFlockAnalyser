@@ -1,6 +1,5 @@
 package ie.dylangore.dsa2.ca1;
 
-import ie.dylangore.dsa2.ca1.sets.DisjointSets;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.layout.VBox;
@@ -11,10 +10,14 @@ import java.io.File;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+/***
+ * Junit testing for main methods
+ */
 class ProcessImageTest extends ApplicationTest {
 
     /**
      * Setup dummy Java FX application to allow testing of Java FX components
+     *
      * @param stage primary stage
      */
     @Override
@@ -47,9 +50,9 @@ class ProcessImageTest extends ApplicationTest {
     void processSets() {
         File imgFile = new File("sample/sample1.jpg");
         Image image = new Image(imgFile.toURI().toString());
-        image = ProcessImage.makeBW(image, (int)image.getWidth(), (int)image.getHeight());
-        ProcessImage.processSets(image, (int)image.getWidth(), (int)image.getHeight());
-        int[] imageSet = DisjointSets.getImageSet();
+        image = ProcessImage.makeBW(image, (int) image.getWidth(), (int) image.getHeight());
+        ProcessImage.processSets(image);
+        int[] imageSet = ProcessImage.getImageSet();
 
         int whiteCount = 0;
         int blackCount = 0;

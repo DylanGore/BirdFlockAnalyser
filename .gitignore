@@ -224,3 +224,5 @@ Temporary Items
 *.pdf
 .idea/*.xml
 imgOut/
+
+*.txt
