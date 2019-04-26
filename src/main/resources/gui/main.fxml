@@ -9,6 +9,7 @@
 <?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
 <VBox alignment="CENTER" maxHeight="400.0" maxWidth="600.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ie.dylangore.dsa2.ca1.gui.ControllerMain">
@@ -32,11 +33,11 @@
             </Menu>
         </menus>
       </MenuBar>
-      <ImageView fx:id="imageMain" fitHeight="310.0" fitWidth="500.0" pickOnBounds="true" preserveRatio="true">
-         <VBox.margin>
-            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-         </VBox.margin>
-      </ImageView>
+      <StackPane fx:id="imageContainer" prefHeight="310.0" prefWidth="500.0">
+         <children>
+            <ImageView fx:id="imageMain" fitHeight="310.0" fitWidth="500.0" pickOnBounds="true" preserveRatio="true" />
+         </children>
+      </StackPane>
       <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="5.0">
          <children>
             <Button fx:id="btnAnalyse" mnemonicParsing="false" onAction="#manipulateImage" text="Analyse Image" />

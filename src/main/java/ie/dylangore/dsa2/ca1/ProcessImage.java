@@ -157,6 +157,7 @@ public class ProcessImage {
         /* Loop through imageSet and add all birds to birdSet
           (ie. add any set that have root values of black pixels to master set)
          */
+        birdSet.clear();
         for (int id = 0; id < imageSet.length; id++) {
             int rootPixel = find(imageSet, id);
             if (rootPixel != WHITE_VAL) {
