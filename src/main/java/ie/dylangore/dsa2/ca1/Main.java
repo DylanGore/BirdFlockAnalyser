@@ -31,6 +31,7 @@ public class Main extends Application {
             Scene scene = new Scene(vb);
             primaryStage.setScene(scene);
             primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("/gui/icon.png")));
+            scene.getStylesheets().add(getClass().getResource("/gui/main.css").toExternalForm());
             primaryStage.setResizable(false);
             primaryStage.setTitle("Bird Flock Analyser");
             System.out.println("Loading...");

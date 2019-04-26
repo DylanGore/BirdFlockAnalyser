@@ -8,17 +8,17 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
-import javafx.scene.image.*;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
-import java.awt.*;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.Set;
@@ -34,7 +34,7 @@ public class ControllerMain {
     private ImageView imageMain;
 
     @FXML
-    private StackPane imageContainer;
+    private AnchorPane imageContainer;
 
     @FXML
     private Button btnAnalyse;
@@ -57,9 +57,7 @@ public class ControllerMain {
         // Load default image
         currImage = new File("sample/sample1.jpg");
         image = new Image(currImage.toURI().toString());
-        imageMain.setImage(image);
-        iWidth = image.getWidth();
-        iHeight = image.getHeight();
+        setImage(image);
     }
 
     /**
@@ -69,18 +67,19 @@ public class ControllerMain {
      */
     @FXML
     public void manipulateImage(ActionEvent event) {
+        imageContainer.getChildren().clear();
         if (currImage != null) {
             if (event.getSource() == menuShowOriginal || event.getSource() == menuOpen) {
-                imageMain.setImage(image);
+                setImage(image);
             } else if (event.getSource() == menuShowBW) {
-                imageMain.setImage(ProcessImage.makeBW(image, iWidth, iHeight));
+                setImage(ProcessImage.makeBW(image, iWidth, iHeight));
             } else if (event.getSource() == btnAnalyse) {
                 Image bwImage = ProcessImage.makeBW(image, iWidth, iHeight);
                 ProcessImage.processSets(bwImage);
                 drawBoxes();
             } else {
                 // If the event source is not handled elsewhere, set the image view to the current image
-                imageMain.setImage(image);
+                setImage(image);
             }
         } else {
             displayNoImageAlert();
@@ -108,6 +107,16 @@ public class ControllerMain {
             image = new Image(currImage.toURI().toString());
             iWidth = image.getWidth();
             iHeight = image.getHeight();
+            // If image is over the maximum viewport resolution, recursively call fill chooser again until it is below that value
+            if(iWidth > 1280 || iHeight > 660){
+                System.out.println("Image too large! Maximum resolution is 1280px x 660px.");
+                openImage(event);
+            }
+            // If image is below the minimum viewport resolution, recursively call fill chooser again until it is below that value
+            if(iWidth < 256 || iHeight < 256){
+                System.out.println("Image too small! Minimum resolution is 256px x 256px.");
+                openImage(event);
+            }
             System.out.println(currImage);
             lblMsg.setText("Current File: " + currImage.getName());
         }
@@ -139,17 +148,8 @@ public class ControllerMain {
      */
     private void drawBoxes() {
         Set<Integer> birdSet = ProcessImage.getBirdSet();
+        imageContainer.getChildren().clear();
         int birdCount = 0;
-        WritableImage wImage = new WritableImage((int) image.getWidth(), (int) image.getHeight());
-        PixelWriter pWriter = wImage.getPixelWriter();
-        PixelReader pixelReader = image.getPixelReader();
-
-        // Draw Image
-        for(int i = 0; i < iHeight; i++){
-            for(int j = 0; j < iWidth; j++){
-                pWriter.setColor(j, i, pixelReader.getColor(j,i));
-            }
-        }
 
         for (int bird: birdSet){
             birdCount++;
@@ -157,16 +157,15 @@ public class ControllerMain {
             int x = (int) (bird%iWidth);
             System.out.println("Bird " + birdCount + ": x: " + x + " y: " + y);
 
-            // Draw color
-            for(int i =y; i < y+5; i++){
-                for(int j = x; j < x+5; j++){
-                    if(j <= iWidth && i <= iHeight){
-                        pWriter.setColor(j, i, Color.DARKRED);
-                    }
-                }
-            }
+            Button btn = new Button();
+            btn.setText(String.valueOf(birdCount));
+            btn.setLayoutX(x);
+            btn.setLayoutY(y);
+            btn.getStyleClass().add("btnBird");
+            imageContainer.getChildren().add(btn);
         }
-        imageMain.setImage(wImage);
+        System.out.println("Container: " + imageContainer.getWidth() + " " + imageContainer.getHeight());
+//        imageMain.setImage(wImage);
         // TODO
     }
 
@@ -195,5 +194,19 @@ public class ControllerMain {
         alert.initStyle(StageStyle.UTILITY);
         alert.showAndWait();
         System.out.println("No Image Selected!");
+    }
+
+    private void setImage(Image image){
+        imageMain.setImage(image);
+        iWidth = image.getWidth();
+        iHeight = image.getHeight();
+        System.out.println("iWidth: " + iWidth + " iHieght: " + iHeight);
+
+        imageContainer.setStyle("-fx-background-image: url('" + image.getUrl() + "'); " +
+                "-fx-background-position: center center; " +
+                "-fx-background-repeat: stretch;");
+        imageContainer.setPrefSize(iWidth, iHeight);
+        imageContainer.setMaxSize(iWidth, iHeight);
+        imageContainer.setMinSize(iWidth, iHeight);
     }
 }
