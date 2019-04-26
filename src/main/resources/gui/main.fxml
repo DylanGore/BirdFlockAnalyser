@@ -1,11 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<VBox alignment="CENTER" maxHeight="400.0" maxWidth="600.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ie.dylangore.dsa2.ca1.gui.ControllerMain">
+
+<VBox alignment="CENTER" maxHeight="400.0" maxWidth="600.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ie.dylangore.dsa2.ca1.gui.ControllerMain">
    <children>
       <MenuBar>
         <menus>
@@ -13,9 +19,17 @@
             <items>
                   <MenuItem fx:id="menuOpen" mnemonicParsing="false" onAction="#openImage" text="Open File..." />
                   <SeparatorMenuItem mnemonicParsing="false" />
+                  <MenuItem mnemonicParsing="false" onAction="#displayAboutAlert" text="About" />
+                  <SeparatorMenuItem mnemonicParsing="false" />
               <MenuItem fx:id="menuClose" mnemonicParsing="false" onAction="#close" text="Close" />
             </items>
           </Menu>
+            <Menu mnemonicParsing="false" text="Image">
+               <items>
+                  <MenuItem fx:id="menuShowOriginal" mnemonicParsing="false" onAction="#manipulateImage" text="Show Original" />
+                  <MenuItem fx:id="menuShowBW" mnemonicParsing="false" onAction="#manipulateImage" text="Show B&amp;W" />
+               </items>
+            </Menu>
         </menus>
       </MenuBar>
       <ImageView fx:id="imageMain" fitHeight="310.0" fitWidth="500.0" pickOnBounds="true" preserveRatio="true">
@@ -25,9 +39,7 @@
       </ImageView>
       <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="5.0">
          <children>
-            <Button fx:id="btnAnalyse" mnemonicParsing="false" onAction="#manipulateImage" text="Analyse Flock" />
-            <Button fx:id="btnOriginal" onAction="#manipulateImage" text="Show Original" />
-            <Button fx:id="btnBW" mnemonicParsing="false" onAction="#manipulateImage" text="Black &amp; White" />
+            <Button fx:id="btnAnalyse" mnemonicParsing="false" onAction="#manipulateImage" text="Analyse Image" />
             <Label fx:id="lblMsg" text="Please select an image" />
          </children>
          <VBox.margin>

@@ -24,21 +24,36 @@ import java.util.Set;
 public class ControllerMain {
 
     @FXML
-    MenuItem menuOpen;
+    private MenuItem menuOpen, menuShowOriginal, menuShowBW;
     @FXML
-    ImageView imageMain;
+    private ImageView imageMain;
 
     @FXML
-    Button btnAnalyse, btnOriginal, btnBW;
+    private Button btnAnalyse;
 
     @FXML
-    Label lblMsg;
+    private Label lblMsg;
 
     private static Stage primaryStage;
     private File currImage;
     private Image image;
     private static double iWidth;
     private static double iHeight;
+
+    /**
+     * Runs on app load
+     *
+     * @param event JavaFX action event
+     */
+    @FXML
+    public void initialize(){
+        // Load default image
+        currImage = new File("sample/sample1.jpg");
+        image = new Image(currImage.toURI().toString());
+        imageMain.setImage(image);
+        iWidth = image.getWidth();
+        iHeight = image.getHeight();
+    }
 
     /**
      * Handles making the imaage black and white and running analysis
@@ -48,9 +63,9 @@ public class ControllerMain {
     @FXML
     public void manipulateImage(ActionEvent event) {
         if (currImage != null) {
-            if (event.getSource() == btnOriginal || event.getSource() == menuOpen) {
+            if (event.getSource() == menuShowOriginal || event.getSource() == menuOpen) {
                 imageMain.setImage(image);
-            } else if (event.getSource() == btnBW) {
+            } else if (event.getSource() == menuShowBW) {
                 imageMain.setImage(ProcessImage.makeBW(image, iWidth, iHeight));
             } else if (event.getSource() == btnAnalyse) {
                 Image bwImage = ProcessImage.makeBW(image, iWidth, iHeight);
@@ -128,6 +143,20 @@ public class ControllerMain {
         alert.setTitle("Error!");
         alert.setHeaderText("An Error Has Occurred!");
         alert.setContentText("No image selected!");
+        alert.initStyle(StageStyle.UTILITY);
+        alert.showAndWait();
+        System.out.println("No Image Selected!");
+    }
+
+    /**
+     * Display about dialog window
+     */
+    @FXML
+    private void displayAboutAlert() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("About");
+        alert.setHeaderText("Bird Flock Analyser");
+        alert.setContentText("Data Structures & Algorithms Assignment 1\nBy Dylan Gore (20081224)\n\n\nIcon made by Freepik from www.flaticon.com.\nLicensed by CC 3.0 BY.");
         alert.initStyle(StageStyle.UTILITY);
         alert.showAndWait();
         System.out.println("No Image Selected!");

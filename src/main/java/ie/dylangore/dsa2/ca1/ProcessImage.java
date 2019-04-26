@@ -119,16 +119,23 @@ public class ProcessImage {
      * @return root
      */
     private static int find(int[] dSet, int indexToFind) {
-        // if the pixel is white, return as white pixels do not need to be processed
-        if (dSet[indexToFind] == WHITE_VAL)
+        /*
+            Disregard white pixels as they are not required
+            without this line sometimes find returns white
+            pixel as the root of a black pixel.
+         */
+        if(dSet[indexToFind] == WHITE_VAL) {
+            //System.out.println(indexToFind);
             return WHITE_VAL;
+        }
 
-        while (dSet[indexToFind] != indexToFind)
+        while (dSet[indexToFind] != indexToFind) {
             indexToFind = dSet[indexToFind];
+        }
         return indexToFind;
     }
 
-    /***
+    /***W
      * Loop through the imageSet joining all each bird into a disjoint set of black pixels,
      * then loop through imageSet and copy birds (disjoint set of black pixels) to a separate bird set
      */
