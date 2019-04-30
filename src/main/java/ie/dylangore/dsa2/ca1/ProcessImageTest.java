@@ -4,9 +4,11 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import org.junit.jupiter.api.Test;
 import org.testfx.framework.junit5.ApplicationTest;
 
 import java.io.File;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -33,7 +35,11 @@ class ProcessImageTest extends ApplicationTest {
      */
     @org.junit.jupiter.api.BeforeEach
     void setUp() {
+        File imgFile = new File("sample/sample1.jpg");
+        Image image = new Image(imgFile.toURI().toString());
 
+        image = ProcessImage.makeBW(image, (int) image.getWidth(), (int) image.getHeight());
+        ProcessImage.processSets(image);
     }
 
     /**
@@ -46,12 +52,8 @@ class ProcessImageTest extends ApplicationTest {
     /**
      * Test making image B&W and counting pixels
      */
-    @org.junit.jupiter.api.Test
+    @Test
     void processSets() {
-        File imgFile = new File("sample/sample1.jpg");
-        Image image = new Image(imgFile.toURI().toString());
-        image = ProcessImage.makeBW(image, (int) image.getWidth(), (int) image.getHeight());
-        ProcessImage.processSets(image);
         int[] imageSet = ProcessImage.getImageSet();
 
         int whiteCount = 0;
@@ -68,5 +70,14 @@ class ProcessImageTest extends ApplicationTest {
         // Check if numbers of black and white pixels matches the values from Photoshop for sample1.jpg
         assertEquals(1601, blackCount);
         assertEquals(252499, whiteCount);
+    }
+
+    /**
+     * Check that the number of birds found in the sample image is 8
+     */
+    @Test
+    void countBirds(){
+        Set<Integer> birdSet = ProcessImage.getBirdSet();
+        assertEquals(8, birdSet.size());
     }
 }

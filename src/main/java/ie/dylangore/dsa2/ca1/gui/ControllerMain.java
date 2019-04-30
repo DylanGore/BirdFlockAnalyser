@@ -11,14 +11,10 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.Set;
@@ -42,7 +38,6 @@ public class ControllerMain {
     @FXML
     private Label lblMsg;
 
-    private static VBox vBox;
     private static Stage primaryStage;
     private File currImage;
     private Image image;
@@ -58,6 +53,7 @@ public class ControllerMain {
         currImage = new File("sample/sample1.jpg");
         image = new Image(currImage.toURI().toString());
         setImage(image);
+        lblMsg.setText("Current File: " + currImage.getName());
     }
 
     /**
@@ -72,7 +68,8 @@ public class ControllerMain {
             if (event.getSource() == menuShowOriginal || event.getSource() == menuOpen) {
                 setImage(image);
             } else if (event.getSource() == menuShowBW) {
-                setImage(ProcessImage.makeBW(image, iWidth, iHeight));
+                ProcessImage.makeBW(image, iWidth, iHeight);
+                setImage(new Image(new File("imgOut/b&w.png").toURI().toString()));
             } else if (event.getSource() == btnAnalyse) {
                 Image bwImage = ProcessImage.makeBW(image, iWidth, iHeight);
                 ProcessImage.processSets(bwImage);
@@ -107,12 +104,12 @@ public class ControllerMain {
             image = new Image(currImage.toURI().toString());
             iWidth = image.getWidth();
             iHeight = image.getHeight();
-            // If image is over the maximum viewport resolution, recursively call fill chooser again until it is below that value
+            // If image is over the maximum viewport resolution, recursively call file chooser again until it is below that value
             if(iWidth > 1280 || iHeight > 660){
                 System.out.println("Image too large! Maximum resolution is 1280px x 660px.");
                 openImage(event);
             }
-            // If image is below the minimum viewport resolution, recursively call fill chooser again until it is below that value
+            // If image is below the minimum viewport resolution, recursively call file chooser again until it is below that value
             if(iWidth < 256 || iHeight < 256){
                 System.out.println("Image too small! Minimum resolution is 256px x 256px.");
                 openImage(event);
@@ -196,6 +193,10 @@ public class ControllerMain {
         System.out.println("No Image Selected!");
     }
 
+    /**
+     * Sets the background of the image container to the required image
+     * @param image image to use
+     */
     private void setImage(Image image){
         imageMain.setImage(image);
         iWidth = image.getWidth();
