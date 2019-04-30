@@ -3,7 +3,7 @@
     -fx-border: solid solid solid solid;
     -fx-border-color: green;
     -fx-border-width: 2;
-    -fx-text-fill: blue;
+    -fx-text-fill: white;
     -fx-font-weight: bold;
-    -fx-font-size: 2em;
+    -fx-font-size: 1em;
 }

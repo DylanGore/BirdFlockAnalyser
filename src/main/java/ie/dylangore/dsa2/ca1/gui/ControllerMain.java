@@ -15,7 +15,12 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Set;
 
@@ -36,7 +41,7 @@ public class ControllerMain {
     private Button btnAnalyse;
 
     @FXML
-    private Label lblMsg;
+    private Label lblMsg, lblInfo;
 
     private static Stage primaryStage;
     private File currImage;
@@ -106,16 +111,37 @@ public class ControllerMain {
             iHeight = image.getHeight();
             // If image is over the maximum viewport resolution, recursively call file chooser again until it is below that value
             if(iWidth > 1280 || iHeight > 660){
-                System.out.println("Image too large! Maximum resolution is 1280px x 660px.");
+                try {
+                    BufferedImage buffImage = ImageIO.read(currImage);
+                    int type = (buffImage.getType() == 0) ? BufferedImage.TYPE_INT_ARGB : buffImage.getType();
+
+                    BufferedImage resizeImageJpg = resizeImage(buffImage, type, 1280, 600);
+                    Files.createDirectories(Paths.get("imgOut"));
+                    ImageIO.write(resizeImageJpg, "jpg", new File(Paths.get("imgOut") + "/resize-too_big.jpg"));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("Image too large! Maximum resolution is 1280px x 660px - Resizing");
                 openImage(event);
             }
             // If image is below the minimum viewport resolution, recursively call file chooser again until it is below that value
             if(iWidth < 256 || iHeight < 256){
+                try {
+                    BufferedImage buffImage = ImageIO.read(currImage);
+                    int type = (buffImage.getType() == 0) ? BufferedImage.TYPE_INT_ARGB : buffImage.getType();
+
+                    BufferedImage resizeImageJpg = resizeImage(buffImage, type, 256, 256);
+                    Files.createDirectories(Paths.get("imgOut"));
+                    ImageIO.write(resizeImageJpg, "jpg", new File(Paths.get("imgOut") + "/resize-too_small.jpg"));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 System.out.println("Image too small! Minimum resolution is 256px x 256px.");
                 openImage(event);
             }
             System.out.println(currImage);
             lblMsg.setText("Current File: " + currImage.getName());
+            lblInfo.setText("");
         }
 
         // Call manipulate image to display currImage
@@ -145,25 +171,51 @@ public class ControllerMain {
      */
     private void drawBoxes() {
         Set<Integer> birdSet = ProcessImage.getBirdSet();
+        int[] imageSet = ProcessImage.getImageSet();
         imageContainer.getChildren().clear();
         int birdCount = 0;
 
         for (int bird: birdSet){
             birdCount++;
-            int y = (int) (bird/iWidth);
-            int x = (int) (bird%iWidth);
-            System.out.println("Bird " + birdCount + ": x: " + x + " y: " + y);
+            int birdX = (int) (bird % iWidth);
+            int birdY = (int) (bird / iWidth);
+            int startX = birdX, startY = birdY;
+            int endX = birdX, endY = birdY;
 
+            // Loop through the imageSet and birdSet, check if the current pixel is part of the bird and size the box accordingly
+            for (int i = 0; i < imageSet.length; i++) {
+                if (ProcessImage.find(imageSet, i) == bird) {
+                    int currX = (int) (i % iWidth);
+                    int currY = (int) (i / iWidth);
+
+                    if (currX < startX) {
+                        startX = currX;
+                    } else {
+                        endX = currX;
+                    }
+
+                    if (currY < startY) {
+                        startY = currY;
+                    } else {
+                        endY = currY;
+                    }
+                }
+            }
+
+            System.out.println("Bird " + birdCount + ": x: " + startX + " y: " + startY);
+
+            // Create the box (button used for simplicity as it has text features as standard)
             Button btn = new Button();
             btn.setText(String.valueOf(birdCount));
-            btn.setLayoutX(x);
-            btn.setLayoutY(y);
+            btn.setLayoutX(startX);
+            btn.setLayoutY(startY);
+            // Set the size to be the difference between the start and end coordinates + 5px padding
+            btn.setPrefSize(endX - startX + 5, endY - startY + 5);
             btn.getStyleClass().add("btnBird");
             imageContainer.getChildren().add(btn);
         }
-        System.out.println("Container: " + imageContainer.getWidth() + " " + imageContainer.getHeight());
-//        imageMain.setImage(wImage);
-        // TODO
+//        System.out.println("Container: " + imageContainer.getWidth() + " " + imageContainer.getHeight());
+        lblInfo.setText(birdCount + " birds have been found in this image.");
     }
 
     /**
@@ -191,6 +243,23 @@ public class ControllerMain {
         alert.initStyle(StageStyle.UTILITY);
         alert.showAndWait();
         System.out.println("No Image Selected!");
+    }
+
+    /***
+     * Resize image to a specific width and height
+     * @param originalImage image to be resized
+     * @param type image type
+     * @param width desired width
+     * @param height desired height
+     * @return resized image
+     */
+    private BufferedImage resizeImage(BufferedImage originalImage, int type, int width, int height) {
+        BufferedImage resizedImage = new BufferedImage(width, height, type);
+        Graphics2D g = resizedImage.createGraphics();
+        g.drawImage(originalImage, 0, 0, width, height, null);
+        g.dispose();
+
+        return resizedImage;
     }
 
     /**

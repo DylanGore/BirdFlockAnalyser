@@ -118,7 +118,7 @@ public class ProcessImage {
      * @param indexToFind to find
      * @return root
      */
-    private static int find(int[] dSet, int indexToFind) {
+    public static int find(int[] dSet, int indexToFind) {
         /*
             Disregard white pixels as they are not required
             without this line sometimes find returns white
@@ -142,13 +142,20 @@ public class ProcessImage {
     private static void countBirds() {
         for (int i = 0; i < imageSet.length; i++) {
             if (imageSet[i] != WHITE_VAL) {
-                // If the pixel to the immediate right is black, union it
-                if (imageSet[i + 1] != WHITE_VAL) {
+                /*
+                  Check that i + 1 is in the bounds of the array and
+                  if the pixel to the immediate right is black, union it.
+                 */
+
+                if (i + 1 < imageSet.length && imageSet[i + 1] != WHITE_VAL) {
                     union(imageSet, i, i + 1);
                 }
 
-                // If the pixel to the bottom (current + image width) is black, union it
-                if (imageSet[i + imageWidth] != WHITE_VAL) {
+                /*
+                  Check that i + imageWidth is in the bounds of the array and
+                  if the pixel to the bottom (current + image width) is black, union it
+                 */
+                if (i + imageWidth < imageSet.length && imageSet[i + imageWidth] != WHITE_VAL) {
                     union(imageSet, i, i + imageWidth);
                 }
             }
@@ -204,7 +211,7 @@ public class ProcessImage {
      *
      * @return int array of pixels
      */
-    static int[] getImageSet() {
+    public static int[] getImageSet() {
         return imageSet;
     }
 

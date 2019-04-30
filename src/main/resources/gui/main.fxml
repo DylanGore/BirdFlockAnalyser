@@ -35,6 +35,11 @@
          <children>
             <Button fx:id="btnAnalyse" mnemonicParsing="false" onAction="#manipulateImage" text="Analyse Image" />
             <Label fx:id="lblMsg" text="Please select an image" />
+             <Label fx:id="lblInfo" layoutX="113.0" layoutY="19.0">
+                 <HBox.margin>
+                     <Insets left="20.0"/>
+                 </HBox.margin>
+             </Label>
          </children>
          <VBox.margin>
             <Insets />
