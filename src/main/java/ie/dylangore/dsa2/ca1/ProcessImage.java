@@ -14,9 +14,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Class to handle image processing - making the image black and white and counting birds
@@ -31,6 +29,10 @@ public class ProcessImage {
     private static int imageWidth = 0, imageHeight = 0;
     private static int[] imageSet;
     private static Set<Integer> birdSet = new HashSet<>();
+
+    private static double bwThreshold = 0.5;
+    private static int minClusterSize = 5;
+    private static int maxClusterSize = 500;
 
 
     /**
@@ -51,7 +53,7 @@ public class ProcessImage {
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
                 Color currColor = pReader.getColor(x, y);
-                if (currColor.getRed() >= 0.5 || currColor.getGreen() >= 0.5 || currColor.getBlue() >= 0.5) {
+                if (currColor.getRed() >= 0.5 || currColor.getGreen() >= getBwThreshold() || currColor.getBlue() >= getBwThreshold()) {
                     pWriter.setColor(x, y, new Color(1, 1, 1, 1));
                 } else {
                     pWriter.setColor(x, y, new Color(0, 0, 0, 1));
@@ -172,8 +174,44 @@ public class ProcessImage {
             }
         }
 
+        removeNoise();
+
         System.out.println("Count: " + birdSet.size());
         saveTextFile(birdSet.toString(), "after");
+    }
+
+    /**
+     * Loop through the imageSet and birdSet, check if the current pixel is part of the bird and if the
+     * current cluster size is less than the threshold, remove it
+     */
+    private static void removeNoise(){
+        List<Integer> deadBirds = new ArrayList<>();
+
+        Iterator itr = birdSet.iterator();
+        while(itr.hasNext()){
+            int bird = (int) itr.next();
+            Set<Integer> currBird = new HashSet<>();
+            currBird.add(bird);
+            for (int i = 0; i < imageSet.length; i++) {
+                int currPixelRoot = find(imageSet, i);
+                if(currPixelRoot == bird){
+                    currBird.add(i);
+                }
+            }
+
+            if(currBird.size() < getMinClusterSize()){
+                deadBirds.add(bird);
+                System.out.println("NOISE REMOVAL: Removing bird at " + bird + " as cluster size " + currBird.size() + " is less than the threshold of " + getMinClusterSize());
+            }else if(currBird.size() > getMaxClusterSize()){
+                deadBirds.add(bird);
+                System.out.println("NOISE REMOVAL: Removing bird at " + bird + " as cluster size " + currBird.size() + " is greater than the threshold of " + getMaxClusterSize());
+            }
+
+        }
+        System.out.println("Dead Birds: " + deadBirds.size());
+        for(int bird: deadBirds){
+            birdSet.remove(bird);
+        }
     }
 
 
@@ -222,5 +260,53 @@ public class ProcessImage {
      */
     public static Set<Integer> getBirdSet() {
         return birdSet;
+    }
+
+    /**
+     * Get black and while color threshold
+     * @return threshold
+     */
+    public static double getBwThreshold() {
+        return bwThreshold;
+    }
+
+    /**
+     * Set black and while color threshold
+     * @param bwThreshold desired threshold
+     */
+    public static void setBwThreshold(double bwThreshold) {
+        ProcessImage.bwThreshold = bwThreshold;
+    }
+
+    /**
+     * Get minimum cluster size to be considered valid
+     * @return cluster size
+     */
+    public static int getMinClusterSize() {
+        return minClusterSize;
+    }
+
+    /**
+     * Set minimum cluster size to be considered valid
+     * @param minClusterSize desired minimum cluster size
+     */
+    public static void setMinClusterSize(int minClusterSize) {
+        ProcessImage.minClusterSize = minClusterSize;
+    }
+
+    /**
+     * Get maximum cluster size to be considered valid
+     * @return cluster size
+     */
+    public static int getMaxClusterSize() {
+        return maxClusterSize;
+    }
+
+    /**
+     * Set maximum cluster size to be considered valid
+     * @param maxClusterSize desired max cluster size
+     */
+    public static void setMaxClusterSize(int maxClusterSize) {
+        ProcessImage.maxClusterSize = maxClusterSize;
     }
 }

@@ -8,6 +8,9 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+/**
+ * Main class
+ */
 public class Main extends Application {
 
     /**

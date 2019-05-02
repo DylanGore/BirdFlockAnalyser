@@ -1,4 +1,4 @@
-# BirdFlockAnalyser
+# Bird Flock Analyser
 
 Data Structures & Algorithm's Assignment 1
 

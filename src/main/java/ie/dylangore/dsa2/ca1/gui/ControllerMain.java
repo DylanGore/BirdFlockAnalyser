@@ -4,13 +4,18 @@ import ie.dylangore.dsa2.ca1.ProcessImage;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.control.*;
 import javafx.scene.control.Button;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -215,7 +220,7 @@ public class ControllerMain {
             imageContainer.getChildren().add(btn);
         }
 //        System.out.println("Container: " + imageContainer.getWidth() + " " + imageContainer.getHeight());
-        lblInfo.setText(birdCount + " birds have been found in this image.");
+        lblInfo.setText("Approximately " + birdCount + " birds have been found in this image.");
     }
 
     /**
@@ -242,7 +247,74 @@ public class ControllerMain {
         alert.setContentText("Data Structures & Algorithms Assignment 1\nBy Dylan Gore (20081224)\n\n\nIcon made by Freepik from www.flaticon.com.\nLicensed by CC 3.0 BY.");
         alert.initStyle(StageStyle.UTILITY);
         alert.showAndWait();
-        System.out.println("No Image Selected!");
+    }
+
+    /**
+     * Show settings window
+     */
+    @FXML
+    private void displaySettings(){
+        try{
+            Dialog<?> dialog = new Dialog<>();
+            dialog.initStyle(StageStyle.UTILITY);
+            dialog.setHeaderText("Adjust image processing and bird counting");
+            dialog.setTitle("Settings");
+
+            ButtonType addButtonType = new ButtonType("Okay", ButtonBar.ButtonData.OK_DONE);
+            dialog.getDialogPane().getButtonTypes().addAll(addButtonType, ButtonType.CLOSE);
+
+            VBox pane = FXMLLoader.load(getClass().getResource("/gui/settings.fxml"));
+
+            System.out.println(pane.getChildren());
+
+            HBox minClusterBox = (HBox) pane.getChildren().get(0);
+            HBox maxClusterBox = (HBox) pane.getChildren().get(1);
+            HBox thresholdBox = (HBox) pane.getChildren().get(2);
+
+            TextField minCluster = (TextField) minClusterBox.getChildren().get(1);
+            TextField maxCluster = (TextField) maxClusterBox.getChildren().get(1);
+            TextField threshold = (TextField) thresholdBox.getChildren().get(1);
+            Button btnDefault = (Button) pane.getChildren().get(3);
+
+            dialog.getDialogPane().setContent(pane);
+
+            // Load current values
+            minCluster.setText(String.valueOf(ProcessImage.getMinClusterSize()));
+            maxCluster.setText(String.valueOf(ProcessImage.getMaxClusterSize()));
+            threshold.setText(String.valueOf(ProcessImage.getBwThreshold()));
+
+            btnDefault.setOnAction(e -> {
+                minCluster.setText("5");
+                maxCluster.setText("500");
+                threshold.setText("0.5");
+            });
+
+            dialog.setResultConverter(dialogButton -> {
+                if(dialogButton == addButtonType){
+                    int minClusterVal = Integer.parseInt(minCluster.getText());
+                    int maxClusterVal = Integer.parseInt(maxCluster.getText());
+                    double thresholdVal = Double.parseDouble(threshold.getText());
+
+                    System.out.println("New min. cluster size: " + minClusterVal);
+                    System.out.println("New max. cluster size: " + maxClusterVal);
+                    System.out.println("New threshold size: " + thresholdVal);
+
+                    if(minClusterVal != 0 && maxClusterVal != 0 && thresholdVal != 0){
+                        ProcessImage.setMinClusterSize(minClusterVal);
+                        ProcessImage.setMaxClusterSize(maxClusterVal);
+                        ProcessImage.setBwThreshold(thresholdVal);
+                    }
+                }else{
+                    System.out.println("Settings dialog closing...");
+                }
+                return null;
+            });
+            System.out.println("Opening Dialog: Add Booking");
+            dialog.showAndWait();
+        }
+		catch(Exception ex) {
+        ex.printStackTrace();
+        }
     }
 
     /***
